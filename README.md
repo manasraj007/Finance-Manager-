@@ -1,9 +1,14 @@
 # Finance-Manager-
 Steps to Setup the Project
+
 Install a C++ Compiler: Ensure you have a C++ compiler installed (e.g., g++, clang++).
+
 Download JSON Library: Download the json.hpp file from the nlohmann/json GitHub repository and include it in your project directory.
+
 Compile the Project: Use a command like g++ -o FinanceManager main.cpp FinanceManager.cpp User.cpp Transaction.cpp Income.cpp Expense.cpp Category.cpp -I path_to_json.hpp to compile the project. Make sure to include the path to the json.hpp file.
+
 Run the Executable: Run the compiled executable to interact with the Personal Finance Manager via the command-line interface.
+
 Here is an example of how to interact with the program
 1. Add User
 2. Add Category
