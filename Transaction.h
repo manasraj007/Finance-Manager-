@@ -3,36 +3,31 @@
 
 #include <string>
 #include <ctime>
-#include <iostream> // For std::cout and std::endl
 #include "Category.h"
+#include "json.hpp" // Include the JSON library
+using namespace std;
 
-class Transaction {
+using json = nlohmann::json;
+
+class Transaction
+{
 private:
-    std::string description;
+    string description;
     double amount;
     time_t date;
     Category category;
+    bool isIncome;
 
 public:
-    Transaction(const std::string& desc, double amt, time_t dt, const Category& cat);
-    virtual ~Transaction() = default;
-    virtual void display() const;
-    std::string getDescription() const;
+    Transaction(const string &desc, double amt, time_t dt, const Category &cat, bool isInc);
+    void display() const;
     double getAmount() const;
+    string getDescription() const;
     time_t getDate() const;
-    std::string getCategory() const;
-};
-
-class Income : public Transaction {
-public:
-    Income(const std::string& desc, double amt, time_t dt, const Category& cat);
-    void display() const override;
-};
-
-class Expense : public Transaction {
-public:
-    Expense(const std::string& desc, double amt, time_t dt, const Category& cat);
-    void display() const override;
+    string getCategory() const;
+    bool isIncomeType() const;
+    json toJson() const;                        // Convert to JSON
+    static Transaction fromJson(const json &j); // Create from JSON
 };
 
 #endif // TRANSACTION_H

@@ -1,94 +1,101 @@
-#include "FinanceManager.h"
 #include <iostream>
-
+#include <ctime>
+#include "FinanceManager.h"
 using namespace std;
 
-int main() {
-    FinanceManager manager;
-    int choice;
+int main()
+{
+    FinanceManager fm;
 
-    while (true) {
-        cout << "1. Add User\n"
-             << "2. Add Category\n"
-             << "3. Add Income\n"
-             << "4. Add Expense\n"
-             << "5. Display Users\n"
-             << "6. Display Categories\n"
-             << "7. Display User Transactions\n"
-             << "8. Save to File\n"
-             << "9. Load from File\n"
-             << "10. Exit\n"
-             << "Enter your choice: ";
+    // Load data from file
+    fm.loadFromFile("data.json");
+
+    // Add some initial categories if they don't already exist
+    fm.addCategory(Category("Salary"));
+    fm.addCategory(Category("Food"));
+    fm.addCategory(Category("Rent"));
+    fm.addCategory(Category("Entertainment"));
+    fm.addCategory(Category("Travel"));
+
+    // Add a user
+    cout << "Enter user name: ";
+    string userName;
+    cin >> userName;
+    User *user = fm.getUser(userName);
+    if (!user)
+    {
+        User newUser(userName);
+        fm.addUser(newUser);
+        user = fm.getUser(userName);
+    }
+
+    int choice;
+    do
+    {
+        cout << "\nFinance Manager Menu\n";
+        cout << "1. Add Transaction\n";
+        cout << "2. Display Transactions\n";
+        cout << "3. Calculate Total Income\n";
+        cout << "4. Calculate Total Expenses\n";
+        cout << "5. Total Balance\n";
+        cout << "6. Save and Exit\n";
+        cout << "Enter your choice: ";
         cin >> choice;
 
-        switch (choice) {
-            case 1: {
-                string userName;
-                cout << "Enter user name: ";
-                cin >> userName;
-                manager.addUser(userName);
-                break;
-            }
-            case 2: {
-                string categoryName;
-                cout << "Enter category name: ";
-                cin >> categoryName;
-                manager.addCategory(categoryName);
-                break;
-            }
-            case 3: {
-                string userName, desc, category;
-                double amount;
-                cout << "Enter user name: ";
-                cin >> userName;
-                cout << "Enter description: ";
-                cin >> desc;
-                cout << "Enter amount: ";
-                cin >> amount;
-                cout << "Enter category: ";
-                cin >> category;
+        switch (choice)
+        {
+        case 1:
+        {
+            string desc;
+            double amount;
+            string category;
+            bool isIncome;
+
+            cout << "Enter description: ";
+            cin.ignore();
+            getline(std::cin, desc);
+
+            cout << "Enter amount: ";
+            cin >> amount;
+
+            cout << "Enter category: ";
+            cin >> category;
+
+            cout << "Is this an income? (1 for Yes, 0 for No): ";
+            cin >> isIncome;
+
+            Category *cat = fm.getCategory(category);
+            if (cat)
+            {
                 time_t now = time(0);
-                manager.addTransaction(userName, make_shared<Income>(desc, amount, now, Category(category)));
-                break;
+                user->addTransaction(std::make_shared<Transaction>(desc, amount, now, *cat, isIncome));
             }
-            case 4: {
-                string userName, desc, category;
-                double amount;
-                cout << "Enter user name: ";
-                cin >> userName;
-                cout << "Enter description: ";
-                cin >> desc;
-                cout << "Enter amount: ";
-                cin >> amount;
-                cout << "Enter category: ";
-                cin >> category;
-                time_t now = time(0);
-                manager.addTransaction(userName, make_shared<Expense>(desc, amount, now, Category(category)));
-                break;
+            else
+            {
+                cout << "Category not found!\n";
             }
-            case 5:
-                manager.displayUsers();
-                break;
-            case 6:
-                manager.displayCategories();
-                break;
-            case 7: {
-                string userName;
-                cout << "Enter user name: ";
-                cin >> userName;
-                manager.displayUserTransactions(userName);
-                break;
-            }
-            case 8:
-                manager.saveToFile("finance_data.json");
-                break;
-            case 9:
-                manager.loadFromFile("finance_data.json");
-                break;
-            case 10:
-                return 0;
-            default:
-                cout << "Invalid choice, please try again." << endl;
+            break;
         }
-    }
+        case 2:
+            user->displayTransactions();
+            break;
+        case 3:
+            cout << "Total Income: " << user->calculateTotalIncome() << endl;
+            break;
+        case 4:
+            cout << "Total Expenses: " << user->calculateTotalExpenses() << endl;
+            break;
+        case 5:
+            cout << "Balance: " << user->calculateTotalIncome() - user->calculateTotalExpenses() << endl;
+            break;
+        case 6:
+            cout << "Saving and exiting...\n";
+            fm.saveToFile("data.json");
+            break;
+        default:
+            cout << "Invalid choice!\n";
+        }
+    } while (choice != 5);
+
+    return 0;
 }

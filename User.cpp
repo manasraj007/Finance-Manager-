@@ -1,32 +1,70 @@
 #include "User.h"
+#include <iostream>
+using namespace std;
 
-void User::addTransaction(shared_ptr<Transaction> transaction) {
+User::User(const std::string &name) : name(name) {}
+
+void User::addTransaction(shared_ptr<Transaction> transaction)
+{
     transactions.push_back(transaction);
 }
 
-void User::displayTransactions() const {
-    for (const auto& transaction : transactions) {
+void User::displayTransactions() const
+{
+    for (const auto &transaction : transactions)
+    {
         transaction->display();
     }
-    cout << "Total Income: " << calculateTotalIncome() << endl;
-    cout << "Total Expenses: " << calculateTotalExpenses() << endl;
-    cout << "Net Balance: " << (calculateTotalIncome() - calculateTotalExpenses()) << endl;
 }
 
-double User::calculateTotalIncome() const {
-    return accumulate(transactions.begin(), transactions.end(), 0.0, [](double sum, const shared_ptr<Transaction>& transaction) {
-        if (dynamic_cast<Income*>(transaction.get())) {
-            return sum + transaction->getAmount();
+double User::calculateTotalIncome() const
+{
+    double total = 0;
+    for (const auto &transaction : transactions)
+    {
+        if (transaction->isIncomeType())
+        {
+            total += transaction->getAmount();
         }
-        return sum;
-    });
+    }
+    return total;
 }
 
-double User::calculateTotalExpenses() const {
-    return accumulate(transactions.begin(), transactions.end(), 0.0, [](double sum, const shared_ptr<Transaction>& transaction) {
-        if (dynamic_cast<Expense*>(transaction.get())) {
-            return sum - transaction->getAmount();
+double User::calculateTotalExpenses() const
+{
+    double total = 0;
+    for (const auto &transaction : transactions)
+    {
+        if (!transaction->isIncomeType())
+        {
+            total += transaction->getAmount();
         }
-        return sum;
-    });
+    }
+    return total;
+}
+
+string User::getName() const
+{
+    return name;
+}
+
+json User::toJson() const
+{
+    json j;
+    j["name"] = name;
+    for (const auto &transaction : transactions)
+    {
+        j["transactions"].push_back(transaction->toJson());
+    }
+    return j;
+}
+
+User User::fromJson(const json &j)
+{
+    User user(j.at("name").get<string>());
+    for (const auto &item : j.at("transactions"))
+    {
+        user.addTransaction(std::make_shared<Transaction>(Transaction::fromJson(item)));
+    }
+    return user;
 }

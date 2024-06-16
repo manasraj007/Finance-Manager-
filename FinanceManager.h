@@ -1,14 +1,12 @@
-#pragma once
+#ifndef FINANCEMANAGER_H
+#define FINANCEMANAGER_H
+
+#include <vector>
 #include "User.h"
 #include "Category.h"
-#include <vector>
-#include <string>
-#include <memory>
-#include <iostream>
-#include <fstream>
-#include <json.hpp>
-
+#include "json.hpp" // Include the JSON library
 using namespace std;
+
 using json = nlohmann::json;
 
 class FinanceManager {
@@ -17,12 +15,12 @@ private:
     vector<Category> categories;
 
 public:
-    void addUser(const string& name);
-    void addCategory(const string& name);
-    void addTransaction(const string& userName, shared_ptr<Transaction> transaction);
-    void displayUsers() const;
-    void displayCategories() const;
-    void displayUserTransactions(const string& userName) const;
-    void saveToFile(const string& filename) const;
-    void loadFromFile(const string& filename);
+    void addUser(const User& user);
+    void addCategory(const Category& category);
+    User* getUser(const string& name);
+    Category* getCategory(const string& name);
+    void saveToFile(const string& filename) const; // Save to JSON file
+    void loadFromFile(const string& filename); // Load from JSON file
 };
+
+#endif // FINANCEMANAGER_H
