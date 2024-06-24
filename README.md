@@ -17,8 +17,8 @@ Finance manager is a simple C++ console application for managing personal financ
 
     ```
 2. **Download nlohmann/json:**
-    Download `json.hpp` from the [nlohmann/json](https://github.com/nlohmann/json) repository and place it in the project directory.
-    It is also available in my repository.
+    Download `json.hpp` from the [nlohmann/json](https://github.com/nlohmann/json) repository and place it in the project directory. 
+    To download you have to go in the single-include folder of nlohmann and copy the raw code of 'json.hpp' present in the folder and place in the folder of your project directory.
 3. **Compile the project:**
     ```sh
     g++ -o FinanceManager main.cpp FinanceManager.cpp User.cpp Transaction.cpp Category.cpp -I .
