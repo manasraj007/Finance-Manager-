@@ -95,7 +95,7 @@ int main()
         default:
             cout << "Invalid choice!\n";
         }
-    } while (choice != 5);
+    } while (choice != 6);
 
     return 0;
 }
