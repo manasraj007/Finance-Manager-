@@ -13,7 +13,8 @@ Finance manager is a simple C++ console application for managing personal financ
 1. **Clone the Repository**
     ```sh
      git clone https://github.com/yourusername/finance-manager.git
-    cd finance-manager
+    cd Finance-Manager-
+
     ```
 2. **Download nlohmann/json:**
     Download `json.hpp` from the [nlohmann/json](https://github.com/nlohmann/json) repository and place it in the project directory.
